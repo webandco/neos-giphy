@@ -5,6 +5,9 @@ namespace Webco\Giphy\AssetSource;
 
 
 use GPH\Model\Gif;
+use GPH\Model\User;
+use Neos\Eel\EelEvaluatorInterface;
+use Neos\Eel\Utility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\HasRemoteOriginalInterface;
@@ -36,6 +39,18 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      * @var array
      */
     private $iptcProperties;
+
+    /**
+     * @var array
+     * @Flow\InjectConfiguration(path="defaultContext", package="Neos.Fusion")
+     */
+    protected $defaultContextConfiguration;
+
+    /**
+     * @var EelEvaluatorInterface
+     * @Flow\Inject(lazy=false)
+     */
+    protected $eelEvaluator;
 
     /**
      * @var UriFactoryInterface
@@ -158,6 +173,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
     /**
      * @param string $propertyName
      * @return bool
+     * @throws \Neos\Eel\Exception
      */
     public function hasIptcProperty(string $propertyName): bool
     {
@@ -167,6 +183,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
     /**
      * @param string $propertyName
      * @return string
+     * @throws \Neos\Eel\Exception
      */
     public function getIptcProperty(string $propertyName): string
     {
@@ -175,13 +192,14 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
 
     /**
      * @return array
+     * @throws \Neos\Eel\Exception
      */
     public function getIptcProperties(): array
     {
         if ($this->iptcProperties === null) {
             $this->iptcProperties = [
                 'Title' => $this->getLabel(),
-                'CopyrightNotice' => 'To be replaced',
+                'CopyrightNotice' => $this->compileCopyrightNotice($this->gif->getUser()),
                 'Creator' => $this->gif->getUsername()
             ];
         }
@@ -189,5 +207,22 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
         return $this->iptcProperties;
     }
 
+    /**
+     * @param User $user
+     * @return string
+     * @throws \Neos\Eel\Exception
+     */
+    protected function compileCopyrightNotice(User $user): string
+    {
+        $userProperties = [
+            'displayName' => $user->getDisplayName(),
+            'username' => $user->getUsername(),
+            'avatarUrl' => $user->getAvatarUrl(),
+            'profileUrl' => $user->getProfileUrl(),
+            'bannerUrl' => $user->getBannerUrl(),
+            'twitter' => $user->getTwitter(),
+        ];
+        return Utility::evaluateEelExpression($this->assetSource->getCopyrightNoticeTemplate(), $this->eelEvaluator, ['user' => $userProperties], $this->defaultContextConfiguration);
+    }
 
 }

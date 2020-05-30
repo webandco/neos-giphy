@@ -20,7 +20,7 @@ class GiphyAssetProxyQuery implements AssetProxyQueryInterface
     /**
      * @var int
      */
-    private $limit = 20;
+    private $limit = 50;
 
     /**
      * @var int

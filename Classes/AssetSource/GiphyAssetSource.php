@@ -31,6 +31,11 @@ class GiphyAssetSource implements AssetSourceInterface
     /**
      * @var string
      */
+    private $copyrightNoticeTemplate;
+
+    /**
+     * @var string
+     */
     protected $iconPath;
 
     /**
@@ -47,6 +52,7 @@ class GiphyAssetSource implements AssetSourceInterface
     public function __construct(string $assetSourceIdentifier, array $assetSourceOptions)
     {
         $this->assetSourceIdentifier = $assetSourceIdentifier;
+        $this->copyrightNoticeTemplate = $assetSourceOptions['copyrightNoticeTemplate'] ?? '';
         $this->iconPath = $assetSourceOptions['icon'] ?? '';
 
         if (!isset($assetSourceOptions['apiKey']) || trim($assetSourceOptions['apiKey']) === '') {
@@ -88,6 +94,14 @@ class GiphyAssetSource implements AssetSourceInterface
     public function getLabel(): string
     {
         return 'Giphy';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCopyrightNoticeTemplate(): string
+    {
+        return $this->copyrightNoticeTemplate;
     }
 
     /**

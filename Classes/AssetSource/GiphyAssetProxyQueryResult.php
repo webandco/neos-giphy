@@ -178,7 +178,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
      */
     public function count()
     {
-        return $this->giphyQueryResultIterator->count();
+        return $this->giphyQueryResult->getPagination()->getTotalCount();
     }
 
 
