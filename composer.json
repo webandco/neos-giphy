@@ -3,7 +3,8 @@
     "type": "neos-package",
     "description": "Giphy Asset Source for Neos CMS",
     "require": {
-        "neos/neos": "*"
+        "neos/neos": "*",
+        "giphy/giphy-php-client": "^1.0"
     },
     "autoload": {
         "psr-4": {

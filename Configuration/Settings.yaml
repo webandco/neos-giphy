@@ -1,0 +1,8 @@
+Neos:
+  Media:
+    assetSources:
+      giphy:
+        assetSource: 'Webco\Giphy\AssetSource\GiphyAssetSource'
+        assetSourceOptions:
+          icon: 'resource://Webco.Giphy/Public/Giphy.svg'
+          apiKey: ''
