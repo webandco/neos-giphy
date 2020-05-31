@@ -1,13 +1,12 @@
 <?php
-
-
+declare(strict_types=1);
 namespace Webco\Giphy\AssetSource;
 
 
-use GPH\Api\DefaultApi;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceConnectionExceptionInterface;
+use Webco\Giphy\Api\Giphy;
 
 class GiphyAssetProxyQuery implements AssetProxyQueryInterface
 {
@@ -95,12 +94,12 @@ class GiphyAssetProxyQuery implements AssetProxyQueryInterface
      */
     public function execute(): AssetProxyQueryResultInterface
     {
-        $giphyApi = new DefaultApi();
+        $giphyApi = new Giphy($this->assetSource->getApiKey());
 
         if ($this->searchTerm === '') {
-            $gifs =$giphyApi->gifsTrendingGet($this->assetSource->getApiKey(), $this->limit);
+            $gifs = $giphyApi->trending($this->limit, $this->offset);
         } else {
-            $gifs = $giphyApi->gifsSearchGet($this->assetSource->getApiKey(), $this->searchTerm, $this->limit, $this->offset);
+            $gifs = $giphyApi->search($this->searchTerm, $this->limit, $this->offset);
         }
 
         return new GiphyAssetProxyQueryResult($this, $gifs, $this->assetSource);

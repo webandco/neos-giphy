@@ -1,11 +1,8 @@
 <?php
-
-
+declare(strict_types=1);
 namespace Webco\Giphy\AssetSource;
 
 
-use GPH\Model\Gif;
-use GPH\Model\User;
 use Neos\Eel\EelEvaluatorInterface;
 use Neos\Eel\Utility;
 use Neos\Flow\Annotations as Flow;
@@ -21,7 +18,7 @@ use Psr\Http\Message\UriInterface;
 class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface, SupportsIptcMetadataInterface
 {
     /**
-     * @var Gif
+     * @var mixed
      */
     private $gif;
 
@@ -59,10 +56,10 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
     protected $uriFactory;
 
     /**
-     * @param Gif $gif
+     * @param mixed $gif
      * @param GiphyAssetSource $assetSource
      */
-    public function __construct(Gif $gif, GiphyAssetSource $assetSource)
+    public function __construct($gif, GiphyAssetSource $assetSource)
     {
         $this->gif = $gif;
         $this->assetSource = $assetSource;
@@ -82,7 +79,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getIdentifier(): string
     {
-        return $this->gif->getId();
+        return $this->gif->id;
     }
 
     /**
@@ -90,17 +87,17 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getLabel(): string
     {
-        return $this->gif->getSlug();
+        return $this->gif->title;
     }
 
     public function getFilename(): string
     {
-        return $this->getIdentifier() . '.gif';
+        return $this->gif->slug . '.gif';
     }
 
     public function getLastModified(): \DateTimeInterface
     {
-        return \DateTime::createFromFormat('Y-m-d H:i:s', $this->gif->getUpdateDatetime() ?? $this->gif->getImportDatetime());
+        return \DateTime::createFromFormat('Y-m-d H:i:s', $this->gif->update_datetime ?? $this->gif->import_datetime);
     }
 
     /**
@@ -108,7 +105,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getFileSize(): int
     {
-        return $this->gif->getImages()->getOriginal()->getSize();
+        return intval($this->gif->images->original->size);
     }
 
     /**
@@ -124,7 +121,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getWidthInPixels(): ?int
     {
-        return intval($this->gif->getImages()->getOriginal()->getWidth());
+        return intval($this->gif->images->original->width);
     }
 
     /**
@@ -132,7 +129,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getHeightInPixels(): ?int
     {
-        return intval($this->gif->getImages()->getOriginal()->getHeight());
+        return intval($this->gif->images->original->height);
 
     }
 
@@ -141,7 +138,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getThumbnailUri(): ?UriInterface
     {
-        return $this->uriFactory->createUri($this->gif->getImages()->getFixedWidthSmall()->getUrl());
+        return $this->uriFactory->createUri($this->gif->images->fixed_width_small->url);
     }
 
     /**
@@ -149,7 +146,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getPreviewUri(): ?UriInterface
     {
-        return $this->uriFactory->createUri($this->gif->getImages()->getOriginal()->getUrl());
+        return $this->uriFactory->createUri($this->gif->images->original->url);
     }
 
     /**
@@ -157,7 +154,7 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
      */
     public function getImportStream()
     {
-        return fopen($this->gif->getImages()->getOriginal()->getUrl(), 'r');
+        return fopen($this->gif->images->original->url, 'r');
     }
 
     public function getLocalAssetIdentifier(): ?string
@@ -198,9 +195,9 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
     {
         if ($this->iptcProperties === null) {
             $this->iptcProperties = [
-                'Title' => $this->getLabel(),
-                'CopyrightNotice' => $this->compileCopyrightNotice($this->gif->getUser()),
-                'Creator' => $this->gif->getUsername()
+                'Title' => $this->gif->title,
+                'CopyrightNotice' => $this->compileCopyrightNotice(),
+                'Creator' => $this->gif->username
             ];
         }
 
@@ -208,21 +205,21 @@ class GiphyAssetProxy implements AssetProxyInterface, HasRemoteOriginalInterface
     }
 
     /**
-     * @param User $user
      * @return string
      * @throws \Neos\Eel\Exception
      */
-    protected function compileCopyrightNotice(User $user): string
+    protected function compileCopyrightNotice(): string
     {
-        $userProperties = [
-            'displayName' => $user->getDisplayName(),
-            'username' => $user->getUsername(),
-            'avatarUrl' => $user->getAvatarUrl(),
-            'profileUrl' => $user->getProfileUrl(),
-            'bannerUrl' => $user->getBannerUrl(),
-            'twitter' => $user->getTwitter(),
-        ];
-        return Utility::evaluateEelExpression($this->assetSource->getCopyrightNoticeTemplate(), $this->eelEvaluator, ['user' => $userProperties], $this->defaultContextConfiguration);
+        if (isset($this->gif->user)) {
+            $user = $this->gif->user;
+        } else {
+            $user = [
+                'display_name' => $this->gif->username,
+                'usernmae' => $this->gif->username
+            ];
+        }
+
+        return Utility::evaluateEelExpression($this->assetSource->getCopyrightNoticeTemplate(), $this->eelEvaluator, ['user' => $user], $this->defaultContextConfiguration);
     }
 
 }

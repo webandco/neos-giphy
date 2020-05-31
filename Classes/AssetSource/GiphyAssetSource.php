@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace Webco\Giphy\AssetSource;
 
 use Neos\Flow\Annotations as Flow;

@@ -6,5 +6,5 @@ Neos:
         assetSourceOptions:
           icon: 'resource://Webco.Giphy/Public/Giphy.svg'
           apiKey: ''
-          copyrightNoticeTemplate: '${"Photo by <a href=\"" + user.profileUrl + "\">" + user.displayName + "</a> on <a href=\"https://giphy.com\">Giphy</a>"}'
+          copyrightNoticeTemplate: '${"Photo by <a href=\"" + user.profile_url + "\">" + user.display_name + "</a> on <a href=\"https://giphy.com\">Giphy</a>"}'
 

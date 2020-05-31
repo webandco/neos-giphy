@@ -1,11 +1,9 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Webco\Giphy\AssetSource;
 
 
-use GPH\Model\Gif;
-use GPH\Model\InlineResponse200;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
@@ -18,7 +16,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
     private $assetSource;
 
     /**
-     * @var InlineResponse200
+     * @var mixed
      */
     private $giphyQueryResult;
 
@@ -32,12 +30,18 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
      */
     private $giphyAssetProxyQuery;
 
-    public function __construct(GiphyAssetProxyQuery $query, InlineResponse200 $giphyQueryResult, GiphyAssetSource $assetSource)
+    /**
+     * GiphyAssetProxyQueryResult constructor.
+     * @param GiphyAssetProxyQuery $query
+     * @param mixed $giphyQueryResult
+     * @param GiphyAssetSource $assetSource
+     */
+    public function __construct(GiphyAssetProxyQuery $query, $giphyQueryResult, GiphyAssetSource $assetSource)
     {
         $this->giphyAssetProxyQuery = $query;
         $this->assetSource = $assetSource;
         $this->giphyQueryResult = $giphyQueryResult;
-        $this->giphyQueryResultIterator = (new \ArrayObject($this->giphyQueryResult->getData()))->getIterator();
+        $this->giphyQueryResultIterator = (new \ArrayObject($this->giphyQueryResult->data))->getIterator();
     }
 
     /**
@@ -62,7 +66,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
     public function toArray(): array
     {
         $assetProxies = [];
-        foreach ($this->giphyQueryResult->getData() as $gif) {
+        foreach ($this->giphyQueryResult->data as $gif) {
             array_push($assetProxies, new GiphyAssetProxy($gif, $this->assetSource));
         }
         return $assetProxies;
@@ -76,14 +80,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
      */
     public function current()
     {
-        /** @var Gif $photo */
-        $gif = $this->giphyQueryResultIterator->current();
-
-        if ($gif instanceof Gif) {
-            return new GiphyAssetProxy($gif, $this->assetSource);
-        }
-
-        return null;
+        return new GiphyAssetProxy($this->giphyQueryResultIterator->current(), $this->assetSource);
     }
 
     /**
@@ -133,7 +130,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
 
     /**
      * Returns true if offset exists. False otherwise.
-     * @param  integer $offset Offset
+     * @param integer $offset Offset
      * @return boolean
      */
     public function offsetExists($offset)
@@ -143,7 +140,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
 
     /**
      * Gets offset.
-     * @param  integer $offset Offset
+     * @param integer $offset Offset
      * @return mixed
      */
     public function offsetGet($offset)
@@ -153,8 +150,8 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
 
     /**
      * Sets value based on offset.
-     * @param  integer $offset Offset
-     * @param  mixed   $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed $value Value to be set
      * @return void
      */
     public function offsetSet($offset, $value)
@@ -164,7 +161,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
 
     /**
      * Unsets offset.
-     * @param  integer $offset Offset
+     * @param integer $offset Offset
      * @return void
      */
     public function offsetUnset($offset)
@@ -178,8 +175,7 @@ class GiphyAssetProxyQueryResult implements AssetProxyQueryResultInterface
      */
     public function count()
     {
-        return $this->giphyQueryResult->getPagination()->getTotalCount();
+        return $this->giphyQueryResult->pagination->total_count;
     }
-
 
 }

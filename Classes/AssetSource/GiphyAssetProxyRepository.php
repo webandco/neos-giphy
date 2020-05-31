@@ -1,10 +1,8 @@
 <?php
-
-
+declare(strict_types=1);
 namespace Webco\Giphy\AssetSource;
 
 
-use GPH\Api\DefaultApi;
 use Neos\Media\Domain\Model\AssetSource\AssetNotFoundExceptionInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
@@ -12,6 +10,7 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxyRepositoryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceConnectionExceptionInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
 use Neos\Media\Domain\Model\Tag;
+use Webco\Giphy\Api\Giphy;
 
 class GiphyAssetProxyRepository implements AssetProxyRepositoryInterface
 {
@@ -33,12 +32,12 @@ class GiphyAssetProxyRepository implements AssetProxyRepositoryInterface
      * @return AssetProxyInterface
      * @throws AssetNotFoundExceptionInterface
      * @throws AssetSourceConnectionExceptionInterface
-     * @throws \GPH\ApiException
+     * @throws \Exception
      */
     public function getAssetProxy(string $identifier): AssetProxyInterface
     {
-        $giphyApi = new DefaultApi();
-        return new GiphyAssetProxy($giphyApi->gifsGifIdGet($this->assetSource->getApiKey(), $identifier)->getData(), $this->assetSource);
+        $giphyApi = new Giphy($this->assetSource->getApiKey());
+        return new GiphyAssetProxy($giphyApi->getById($identifier)->data, $this->assetSource);
     }
 
     /**
