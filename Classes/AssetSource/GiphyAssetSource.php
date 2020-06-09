@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Webco\Giphy\AssetSource;
+namespace Webandco\Giphy\AssetSource;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\Exception\InvalidConfigurationException;

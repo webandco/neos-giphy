@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-composer require --placeholder--
+composer require webandco/neos-giphy
 ```
 
 ## How to use
@@ -18,7 +18,7 @@ Neos:
   Media:
     assetSources:
       giphy:
-        assetSource: 'Webco\Giphy\AssetSource\GiphyAssetSource'
+        assetSource: 'Webandco\Giphy\AssetSource\GiphyAssetSource'
         assetSourceOptions:
           apiKey: 'yourAPIKey'
           copyrightNoticeTemplate: '${"Photo by <a href=\"" + user.profile_url + "\">" + user.display_name + "</a>"}'

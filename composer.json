@@ -1,5 +1,5 @@
 {
-    "name": "webco/neos-giphy",
+    "name": "webandco/neos-giphy",
     "type": "neos-package",
     "description": "Giphy Asset Source for Neos CMS",
     "require": {
@@ -7,12 +7,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Webco\\Giphy\\": "Classes"
+            "Webandco\\Giphy\\": "Classes"
         }
     },
     "extra": {
         "neos": {
-            "package-key": "Webco.Giphy"
+            "package-key": "Webandco.Giphy"
         }
     }
 }

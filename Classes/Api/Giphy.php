@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Webco\Giphy\Api;
+namespace Webandco\Giphy\Api;
 
 class Giphy
 {

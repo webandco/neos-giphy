@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Webco\Giphy\AssetSource;
+namespace Webandco\Giphy\AssetSource;
 
 
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;

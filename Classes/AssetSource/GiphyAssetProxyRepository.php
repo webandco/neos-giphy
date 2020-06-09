@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Webco\Giphy\AssetSource;
+namespace Webandco\Giphy\AssetSource;
 
 
 use Neos\Media\Domain\Model\AssetSource\AssetNotFoundExceptionInterface;
@@ -10,7 +10,7 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxyRepositoryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceConnectionExceptionInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
 use Neos\Media\Domain\Model\Tag;
-use Webco\Giphy\Api\Giphy;
+use Webandco\Giphy\Api\Giphy;
 
 class GiphyAssetProxyRepository implements AssetProxyRepositoryInterface
 {

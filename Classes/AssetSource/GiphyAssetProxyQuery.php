@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
-namespace Webco\Giphy\AssetSource;
+namespace Webandco\Giphy\AssetSource;
 
 
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceConnectionExceptionInterface;
-use Webco\Giphy\Api\Giphy;
+use Webandco\Giphy\Api\Giphy;
 
 class GiphyAssetProxyQuery implements AssetProxyQueryInterface
 {

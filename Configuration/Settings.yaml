@@ -2,9 +2,9 @@ Neos:
   Media:
     assetSources:
       giphy:
-        assetSource: 'Webco\Giphy\AssetSource\GiphyAssetSource'
+        assetSource: 'Webandco\Giphy\AssetSource\GiphyAssetSource'
         assetSourceOptions:
-          icon: 'resource://Webco.Giphy/Public/Giphy.svg'
+          icon: 'resource://Webandco.Giphy/Public/Giphy.svg'
           apiKey: ''
           copyrightNoticeTemplate: '${"Photo by <a href=\"" + user.profile_url + "\">" + user.display_name + "</a> on <a href=\"https://giphy.com\">Giphy</a>"}'
 
