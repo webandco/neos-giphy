@@ -2,6 +2,10 @@
 declare(strict_types=1);
 namespace Webandco\Giphy\Api;
 
+use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Uri;
+use Neos\Flow\Http\Client\CurlEngine;
+
 class Giphy
 {
 
@@ -13,12 +17,18 @@ class Giphy
     private $apiKey;
 
     /**
+     * @var CurlEngine
+     */
+    private $curlEngine;
+
+    /**
      * Giphy constructor.
      * @param string $apiKey
      */
     public function __construct(string $apiKey)
     {
         $this->apiKey = $apiKey;
+        $this->curlEngine = new CurlEngine();
     }
 
     /**
@@ -75,13 +85,16 @@ class Giphy
     private function request ($endpoint, array $params = array())
     {
         $params['api_key'] = $this->apiKey;
-        $query = http_build_query($params);
-        $url = self::$GIPHY_API_URL . $endpoint . ($query ? "?$query" : '');
-        $result = file_get_contents($url);
-        if ($result === false) {
-            throw new \Exception('Error connecting to the API ' . $url);
+
+        $uri = new Uri(self::$GIPHY_API_URL . $endpoint);
+        $request = new ServerRequest('GET', $uri->withQuery(http_build_query($params)));
+
+        $response = $this->curlEngine->sendRequest($request);
+
+        if ($response->getStatusCode() != 200) {
+            throw new \Exception('Error connecting to the API ' . $request->getUri()->getHost() . $request->getUri()->getPath());
         }
-        return json_decode($result);
+        return json_decode($response->getBody()->getContents());
     }
 
 }
