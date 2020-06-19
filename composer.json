@@ -2,6 +2,7 @@
     "name": "webandco/neos-giphy",
     "type": "neos-package",
     "description": "Giphy Asset Source for Neos CMS",
+    "license": "MIT",
     "require": {
         "neos/neos": "*"
     },
